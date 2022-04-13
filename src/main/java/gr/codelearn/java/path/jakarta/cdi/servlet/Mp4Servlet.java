@@ -5,12 +5,12 @@
 package gr.codelearn.java.path.jakarta.cdi.servlet;
 
 import gr.codelearn.java.path.jakarta.cdi.domain.Video;
-import gr.codelearn.java.path.jakarta.cdi.qualifier.VideoQual;
+import gr.codelearn.java.path.jakarta.cdi.qualifier.MP4;
 import gr.codelearn.java.path.jakarta.cdi.service.VideoEditorService;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
-import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,18 +22,27 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author giannis
  */
-@WebServlet(name = "AviServlet", value = "/avi-servlet")
-public class AviServlet extends HttpServlet {
-    @Inject
-    @VideoQual
+@WebServlet(name = "Mp4Servlet", value = "/mp4-servlet")
+public class Mp4Servlet extends HttpServlet {
+
     private Video video;
     
     @Inject
-    private VideoEditorService videoEditorService;
-    
-    @Override
-    public void init(){
+    private String randomText;
 
+    @Inject
+    @MP4
+    //Alternative is used for different deployment scenario
+    //@Alternative
+    private VideoEditorService videoEditorService;
+
+    @Override
+    public void init() {
+        video = new Video();
+        video.setName(randomText);
+        video.setSizeGB(BigDecimal.valueOf(50));
+        video.setYear(2000);
+        video.setViews(10000);
     }
 
     /**
@@ -53,10 +62,10 @@ public class AviServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Avi Servlet</title>");            
+            out.println("<title>MP4 Servlet</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>AviServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>MP4 Servlet at " + request.getContextPath() + "</h1>");
             out.println("<h1>Video: " + video + "</h1>");
             out.println("<h1>Edited video: " + videoEditorService.edit(video) + "</h1>");
             out.println("<h1>Saved video: " + videoEditorService.save(video) + "</h1>");
